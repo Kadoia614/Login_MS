@@ -5,7 +5,8 @@ const bcrypt = require("bcryptjs"); // Para comparação de senha criptografada
 const USER_API = require("../service/user_api");
 
 exports.login = async (request, reply) => {
-  const { email, pwd } = request.body;
+  const { email, password } = request.body;
+
   try {
     const response = await USER_API.post(`/user/login`, {
       email: email,
@@ -13,20 +14,20 @@ exports.login = async (request, reply) => {
 
     const user = response.data;
 
-    const validPassword = await bcrypt.compare(pwd, user.password);
+    const validPassword = await bcrypt.compare(password, user.password);
 
-    if (!validPassword && pwd != user.password) {
+    if (!validPassword && password != user.password) {
       throw { message: "Email ou senha incorretos", status: 401 };
     }
 
     const token = jwt.sign(
       { id: user.id, name: user.name, role: user.role },
-      process.env.SECRET_KEY
+      process.env.JWT_KEY
     );
 
     let payload = {
-      firstLogin: user.firstLogin,
       message: "Login bem sucedido",
+      firstLogin: user.firstLogin,
       name: user.name,
       token: token,
       ip: request.ip,
@@ -37,6 +38,6 @@ exports.login = async (request, reply) => {
   } catch (error) {
     return reply
       .status(error.status || 500)
-      .send(error || "Erro interno no servidor");
+      .send(error.message || "Erro interno no servidor");
   }
 };

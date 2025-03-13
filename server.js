@@ -1,7 +1,7 @@
 const fatify = require("fastify");
 const cors = require("@fastify/cors");
-const swagger = require("@fastify/swagger");
-const swaggerUi = require("@fastify/swagger-ui");
+const fastifySwagger = require("@fastify/swagger");
+const fastifySwaggerUi = require("@fastify/swagger-ui");
 
 const routes = require("./router/routes");
 
@@ -14,42 +14,56 @@ app.register(cors, {
   withCredentials: true,
 });
 
-app.register(swagger, {
-  openapi: "3.0.0",
-  info: {
-    title: "Fastify Login API",
-    description: "API for user login",
-    version: "1.0.0",
+app.register(fastifySwagger, {
+  openapi: {
+    openapi: "3.0.0",
+    components: {
+      securitySchemes: {
+        JWTAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+        APIKey: {
+          type: "apiKey",
+          in: "header",
+          name: "x-api-key",
+          description: "Use a chave de API no cabeçalho como 'x-api-key'",
+        },
+      },
+    },
+    info: {
+      title: "Test swagger",
+      description: "API principal de consumo de microserviços",
+      version: "2.0.0",
+    },
+    servers: [
+      {
+        url: "http://192.168.16.13:8001",
+        description: "Development server",
+      },
+      {
+        url: "http://192.168.16.80:8001",
+        description: "prodution server",
+      },
+    ],
   },
-  servers: [
-    {
-      url: "192.168.16.13:8003",
-      desciption: "Developer server",
-    },
-    {
-      url: "192.168.16.80:8003",
-      desciption: "Prodution server",
-    },
-  ],
 });
 
-app.register(swaggerUi,{
-    routePrefix: "/docs",
-    expouseRoute: true,
-})
+app.register(fastifySwaggerUi, {
+  routePrefix: "/docs",
+  exposeRoute: true,
+});
 
-app.register(routes)
+app.register(routes);
 
-const port = 8003;
+const port = 8001;
 
-const start = ()=> {
-    try {
-        app.listen({port, host: '0.0.0.0'})
-        console.log(`Server is running on port ${port}`)
-    } catch (error) {
-        
-    }
-}
+const start = () => {
+  try {
+    app.listen({ port, host: "0.0.0.0" });
+    console.log(`Server is running on port ${port}`);
+  } catch (error) {}
+};
 
-
-start ()
+start();

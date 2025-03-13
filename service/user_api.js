@@ -10,7 +10,7 @@ const USER_API = axios.create({
 
 USER_API.interceptors.request.use(
   (config) => {
-    config.headers["authorization"] = process.env.USER_API_KEY;
+    config.headers["x-api-key"] = process.env.USER_API_KEY;
 
     return config;
   },

@@ -7,7 +7,7 @@ exports.verifyToken = (token) => {
       throw { status: 401 , message: "Sem token fornecido" };
     }
 
-    jwt.verify(token, process.env.SECRET_KEY, function (err, decoded) {
+    jwt.verify(token, process.env.JWT_KEY, function (err, decoded) {
       if (err) {
         throw { status: 401 , message: "Incorrect Token." };
       }
