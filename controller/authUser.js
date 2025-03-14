@@ -6,21 +6,25 @@ exports.authUser = async (request, reply) => {
 
   try {
     let user = await verifyToken(token);
+
     let response = await USER_API.get(`/user/${user.id}`);
 
     let verifyUser = response.data;
 
     if (!verifyUser) {
-      throw { message: "Unauthorized", status: 401 };
+      const error = new Error("User not found");
+      error.status = 401;
+      throw error;
     }
 
     reply
       .status(200)
-      .send({ message: "Usuário authenticado", scopo: verifyUser.role, user: user });
+      .send({
+        message: "Usuário authenticado",
+        scopo: verifyUser.role,
+        user: user,
+      });
   } catch (error) {
-    return reply.status(error.status || 500).send({
-      message: error.message || "Erro interno no servidor",
-      error: error,
-    });
+    throw error;
   }
 };

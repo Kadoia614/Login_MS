@@ -36,22 +36,41 @@ const loginSchema = {
         scopo: { type: "string", example: "admin" },
       },
     },
-    401: {
-      description: "Não autorizado",
-      type: "object",
-      properties: { message: { type: "string", example: "Não autorizado" } },
-    },
     400: {
-      description: "Erro de validação",
+      description: "Erro no login",
       type: "object",
       properties: {
-        message: { type: "string", example: "Erro de validação" },
+        statusCode: { type: "integer", example: 400 },
+        error: { type: "string", example: "Bad Request" },
+        message: { type: "string", example: "Bad Request" },
+      },
+    },
+    401: {
+      description: "Erro no login",
+      type: "object",
+      properties: {
+        statusCode: { type: "integer", example: 400 },
+        error: { type: "string", example: "Unauthorized" },
+        message: { type: "string", example: "Você não está autorizado a acessar este serviço." },
+      },
+    },
+    404: {
+      description: "Erro no login",
+      type: "object",
+      properties: {
+        statusCode: { type: "integer", example: 400 },
+        error: { type: "string", example: "Not Found" },
+        message: { type: "string", example: "A serviço solicitada não foi encontrada." },
       },
     },
     500: {
       description: "Erro interno",
       type: "object",
-      properties: { message: { type: "string", example: "Erro interno" } },
+      properties: {
+        statusCode: { type: "integer", example: 400 },
+        error: { type: "string", example: "Server Error" },
+        message: { type: "string", example: "Erro interno no Servidor" },
+      },
     },
   },
 };
