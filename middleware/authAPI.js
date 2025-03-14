@@ -6,7 +6,7 @@ const auth = (request, reply, next) => {
 console.log(apiKey)
 
   apiKey === process.env.API_KEY
-    ? next()
+    ? ''
     : reply.status(401).send("Acesso não permitido");
 };
 
